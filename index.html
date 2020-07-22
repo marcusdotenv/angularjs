@@ -16,15 +16,28 @@
             margin-top: 20px;
             margin-left: auto;
             margin-right: auto;
+            background-color: #017E5C;
         }
 
-        .selecionado {
-            background-color: yellow;
+        .list-item {
+            color: #F2F2F2;
+
         }
 
         .negrito {
             font-weight: bold;
+            color: #ffcf33;
         }
+
+        .inputs-div {
+            margin: 20px;
+        }
+        .buttons-div{
+            height: 90px;
+            justify-content: space-around;
+            align-items: center;
+            padding:auto;
+       }
     </style>
 
     <script src="lib/angular/angular.js"></script>
@@ -36,49 +49,44 @@
             $scope.bombas = [];
 
             var carregarBomba = function () {
-                $http.get("http://localhost:9595/api/bombas").then(sucessCallback, errorCallback)
-
+                $http.get("http://localhost:9595/api/bombas").then(sucessGET, errorGET)
             };
-            function sucessCallback(response) {
+            function sucessGET(response) {
                 $scope.bombas = response.data._embedded.bombas
             }
-            function errorCallback(error) {
+            function errorGET(error) {
                 console.log(error)
             }
             $scope.adicionarBomba = function (bomba) {
-                $scope.bombas.push(angular.copy(bomba));
+                $http.post("http://localhost:9595/api/bombas", bomba).then(sucessPOST, errorPOST)
                 delete $scope.bomba;
             };
+            function sucessPOST(response) {
+                carregarBomba();
+                delete $scope.bomba;
+            }
+            function errorPOST(error) {
+                console.log(error)
+            }
             $scope.atualizarBombas = function (bombas, bomba) {
                 $scope.bombas = bombas.filter(function (bomba2) {
                     if (bomba2.selecionado) {
-                        bomba2.nome = bomba.nome;
-                        bomba2.fabricante = bomba.fabricante;
-                        bomba2.vazaoDesejada = bomba.vazaoDesejada;
-                        bomba2.rangeVazaoMin = bomba.rangeVazaoMin;
-                        bomba2.rangeVazaoMinima = bomba.rangeVazaoMinima;
-                        bomba2.vazaoNominal = bomba.vazaoNominal;
-                        bomba2.vazaoMaxima = bomba.vazaoMaxima;
-                        bomba2.curvaHeadX0 = bomba.curvaHeadX0;
-                        bomba2.curvaHeadX1 = bomba.curvaHeadX1;
-                        bomba2.curvaHeadX2 = bomba.curvaHeadX2;
-                        bomba2.curvaHeadX3 = bomba.curvaHeadX3;
-                        bomba2.curvaHeadX4 = bomba.curvaHeadX4;
-                        bomba2.curvaHeadX5 = bomba.curvaHeadX5;
-                        bomba2.curvaPotenciaX0 = bomba.curvaPotenciaX0;
-                        bomba2.curvaPotenciaX1 = bomba.curvaPotenciaX1;
-                        bomba2.curvaPotenciaX2 = bomba.curvaPotenciaX2;
-                        bomba2.curvaPotenciaX3 = bomba.curvaPotenciaX3;
-                        bomba2.curvaPotenciaX4 = bomba.curvaPotenciaX4;
-                        bomba2.curvaPotenciaX5 = bomba.curvaPotenciaX5;
+                        $http.put(bomba2._links.bomba.href, bomba).then(sucessPOST, errorPOST)
+                        carregarBomba();
+                    }
 
-                        delete $scope.bomba;
-                    } return bomba2;
                 });
             };
             $scope.apagarBombas = function (bombas) {
+                let arrayDelete = [];
                 $scope.bombas = bombas.filter(function (bomba) {
-                    if (!bomba.selecionado) return bomba;
+                    if (bomba.selecionado) {
+                        arrayDelete = [...arrayDelete, bomba]
+                        arrayDelete.map(bomba2 => {
+                            $http.delete(bomba2._links.bomba.href).then(sucessPOST, errorPOST)
+                        })
+                        carregarBomba();
+                    };
                 });
             };
             $scope.isBombaSelecionado = function (bombas) {
@@ -93,58 +101,58 @@
 
 <body ng-controller="listaBombaController">
     <div class="jumbotron">
-        <h3>{{app}}</h3>
+        <h3 class="list-item">{{app}}</h3>
 
         <table ng-show="bombas.length > 0" class="table table-striped mt-3">
             <tr>
                 <th></th>
-                <th>Nome</th>
-                <th>Fabricante</th>
-                <th>Vazão Desejada</th>
-                <th>Range Vazão Min</th>
-                <th>Range Vazão Mínima</th>
-                <th>Vazão Nominal</th>
-                <th>Vazão Máxima</th>
-                <th>Coeficiente Head x0</th>
-                <th>Coeficiente Head x1</th>
-                <th>Coeficiente Head x2</th>
-                <th>Coeficiente Head x3</th>
-                <th>Coeficiente Head x4</th>
-                <th>Coeficiente Head x5</th>
-                <th>Coeficiente Potência x0</th>
-                <th>Coeficiente Potência x1</th>
-                <th>Coeficiente Potência x2</th>
-                <th>Coeficiente Potência x3</th>
-                <th>Coeficiente Potência x4</th>
-                <th>Coeficiente Potência x5</th>
+                <th class="list-item">Nome</th>
+                <th class="list-item">Fabricante</th>
+                <th class="list-item">Vazão Desejada</th>
+                <th class="list-item">Range Vazão Min</th>
+                <th class="list-item">Range Vazão Mínima</th>
+                <th class="list-item">Vazão Nominal</th>
+                <th class="list-item">Vazão Máxima</th>
+                <th class="list-item">Coeficiente Head x0</th>
+                <th class="list-item">Coeficiente Head x1</th>
+                <th class="list-item">Coeficiente Head x2</th>
+                <th class="list-item">Coeficiente Head x3</th>
+                <th class="list-item">Coeficiente Head x4</th>
+                <th class="list-item">Coeficiente Head x5</th>
+                <th class="list-item">Coeficiente Potência x0</th>
+                <th class="list-item">Coeficiente Potência x1</th>
+                <th class="list-item">Coeficiente Potência x2</th>
+                <th class="list-item">Coeficiente Potência x3</th>
+                <th class="list-item">Coeficiente Potência x4</th>
+                <th class="list-item">Coeficiente Potência x5</th>
             </tr>
             <tr ng-class="{'selecionado negrito': tempBomba.selecionado}" ng-repeat="tempBomba in bombas">
                 <td><input type="checkbox" ng-model="tempBomba.selecionado" /></td>
-                <td>{{tempBomba.nome}}</td>
-                <td>{{tempBomba.fabricante}}</td>
-                <td>{{tempBomba.vazaoDesejada}}</td>
-                <td>{{tempBomba.rangeVazaoMin}}</td>
-                <td>{{tempBomba.rangeVazaoMinima}}</td>
-                <td>{{tempBomba.vazaoNominal}}</td>
-                <td>{{tempBomba.vazaoMaxima}}</td>
-                <td>{{tempBomba.curvaHeadX0}}</td>
-                <td>{{tempBomba.curvaHeadX1}}</td>
-                <td>{{tempBomba.curvaHeadX2}}</td>
-                <td>{{tempBomba.curvaHeadX3}}</td>
-                <td>{{tempBomba.curvaHeadX4}}</td>
-                <td>{{tempBomba.curvaHeadX5}}</td>
-                <td>{{tempBomba.curvaPotenciaX0}}</td>
-                <td>{{tempBomba.curvaPotenciaX1}}</td>
-                <td>{{tempBomba.curvaPotenciaX2}}</td>
-                <td>{{tempBomba.curvaPotenciaX3}}</td>
-                <td>{{tempBomba.curvaPotenciaX4}}</td>
-                <td>{{tempBomba.curvaPotenciaX5}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.nome}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.fabricante}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.vazaoDesejada}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.rangeVazaoMin}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.rangeVazaoMinima}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.vazaoNominal}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.vazaoMaxima}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX0}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX1}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX2}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX3}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX4}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX5}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX0}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX1}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX2}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX3}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX4}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX5}}</td>
 
             </tr>
         </table>
         <hr>
 
-        <form class="form-inline" name="bombaForm">
+        <form class="form-inline inputs-div" name="bombaForm">
             <div class="form-inline">
                 <input class="form-control mb-3" type="text" ng-model="bomba.nome" name="nome" placeholder="Nome"
                     ng-required="true" />
@@ -198,13 +206,14 @@
                 Todos os campos devem ser preenchidos!
             </div>
         </div>
-
-        <button class="btn btn-primary btn-block" ng-click="adicionarBomba(bomba)" ng-if="!isBombaSelecionado(bombas)"
-            ng-disabled="bombaForm.$invalid">Adicionar Bomba</button>
-        <button class="btn btn-warning btn-block" ng-click="atualizarBombas(bombas, bomba)"
-            ng-if="isBombaSelecionado(bombas)" ng-disabled="bombaForm.$invalid">Atualizar Bomba</button>
-        <button class="btn btn-danger btn-block" ng-click="apagarBombas(bombas)"
-            ng-if="isBombaSelecionado(bombas)">Apagar Bombas</button>
+        <div class='buttons-div'>
+            <button class="btn btn-primary btn-block" ng-click="adicionarBomba(bomba)" ng-if="!isBombaSelecionado(bombas)"
+                ng-disabled="bombaForm.$invalid">Adicionar Bomba</button>
+            <button class="btn btn-warning btn-block" ng-click="atualizarBombas(bombas, bomba)"
+                ng-if="isBombaSelecionado(bombas)" ng-disabled="bombaForm.$invalid">Atualizar Bomba</button>
+            <button class="btn btn-danger btn-block" ng-click="apagarBombas(bombas)"
+                ng-if="isBombaSelecionado(bombas)">Apagar Bombas</button>
+        </div>
     </div>
 </body>
 
