@@ -32,31 +32,45 @@
             $scope.bombas = [];
 
             var carregarBomba = function(){
-                $http.get("http://localhost:9595/api/bombas").then(sucessCallback, errorCallback)
-                
+                $http.get("http://localhost:9595/api/bombas").then(sucessGET, errorGET)
             };
-            function sucessCallback(response){
+            function sucessGET(response){
                 $scope.bombas = response.data._embedded.bombas
+                console.log($scope.bombas)
             }
-            function errorCallback(error){
+            function errorGET(error){
                 console.log(error)
             }
             $scope.adicionarBomba = function(bomba){
-                $scope.bombas.push(angular.copy(bomba));
+                $http.post("http://localhost:9595/api/bombas", bomba).then(sucessPOST, errorPOST)
                 delete $scope.bomba;
             };
+            function sucessPOST(response){
+                carregarBomba();
+                delete $scope.bomba;
+            }
+            function errorPOST(error){
+                console.log(error)
+            }
             $scope.atualizarBombas = function(bombas, bomba){                
                 $scope.bombas = bombas.filter(function(bomba2){
                     if (bomba2.selecionado) {
-                        bomba2.nome=bomba.nome;
-                        bomba2.fabricante=bomba.fabricante;
-                        delete $scope.bomba;
-                    }return bomba2;
+                        $http.put(bomba2._links.bomba.href, bomba).then(sucessPOST, errorPOST)
+                        carregarBomba();
+                    }
+
                 });
             };
-            $scope.apagarBombas = function(bombas){                
+            $scope.apagarBombas = function(bombas){        
+                let arrayDelete = [];        
                 $scope.bombas = bombas.filter(function(bomba){
-                    if (!bomba.selecionado) return bomba;
+                    if (bomba.selecionado){
+                        arrayDelete = [...arrayDelete, bomba]
+                        arrayDelete.map(bomba2 =>{
+                            $http.delete(bomba2._links.bomba.href).then(sucessPOST, errorPOST)
+                        })
+                        carregarBomba();
+                    };
                 });
             };
             $scope.isBombaSelecionado = function (bombas){
