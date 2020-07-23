@@ -52,5 +52,9 @@ angular.module("listaBomba").controller("listaBombaController", function ($scope
     $scope.passarBomba = function (bomba) {
         $scope.coef = bomba;
     }
+    $scope.ordenarPor = function(campo){
+        $scope.criterioDeOrdenacao = campo;
+        $scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
+    };
     carregarBomba();
 });
