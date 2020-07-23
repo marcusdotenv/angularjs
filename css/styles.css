@@ -1,0 +1,48 @@
+        .jumbotron {
+            width: 2000px;
+            text-align: center;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #017E5C;
+        }
+
+        .list-item {
+            color: #F2F2F2;
+        }
+
+        .negrito {
+            font-weight: bold;
+            color: #ffcf33;
+        }
+
+        .inputs-div {
+            margin: 20px;
+        }
+
+        .buttons-div {
+            height: 90px;
+            justify-content: space-around;
+            align-items: center;
+            padding: auto;
+        }
+
+        body {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+
+        .jumbotron {
+            margin: 10px;
+        }
+
+        #cadatro {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            display: flexbox;
+        }
