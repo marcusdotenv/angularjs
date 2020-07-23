@@ -32,33 +32,45 @@
         .inputs-div {
             margin: 20px;
         }
-        .buttons-div{
+
+        .buttons-div {
             height: 90px;
             justify-content: space-around;
             align-items: center;
-            padding:auto;
-       }
-       body{
-           display: flex;
-           flex-direction: row-reverse;
-       }
-       .jumbotron{
-           margin : 10px;
-       }
-       #cadatro{
-           display: flex;
-           flex-direction: column;
-           justify-content: center;
-           align-items: center;
-       }
+            padding: auto;
+        }
+
+        body {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+
+        .jumbotron {
+            margin: 10px;
+        }
+
+        #cadatro {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal{
+            display: flexbox;
+        }
 
     </style>
 
     <script src="lib/angular/angular.js"></script>
     <script src="lib/angular/angular-messages.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
         angular.module("listaBomba", ["ngMessages"]);
         angular.module("listaBomba").controller("listaBombaController", function ($scope, $http) {
+            $scope.coef;
             $scope.app = "Cadastro de Bomba";
             $scope.bombas = [];
 
@@ -108,6 +120,9 @@
                     return bomba.selecionado;
                 });
             };
+            $scope.passarBomba = function (bomba){
+               $scope.coef = bomba;
+            }
             carregarBomba();
         });
     </script>
@@ -122,96 +137,163 @@
                 <th class="list-item">Nome</th>
                 <th class="list-item">Fabricante</th>
                 <th class="list-item">Vazão Desejada</th>
-                <th class="list-item">Range Vazão Min</th>
                 <th class="list-item">Range Vazão Mínima</th>
                 <th class="list-item">Vazão Nominal</th>
                 <th class="list-item">Vazão Máxima</th>
-                <th class="list-item">Coeficiente Head x0</th>
-                <th class="list-item">Coeficiente Head x1</th>
-                <th class="list-item">Coeficiente Head x2</th>
-                <th class="list-item">Coeficiente Head x3</th>
-                <th class="list-item">Coeficiente Head x4</th>
-                <th class="list-item">Coeficiente Head x5</th>
-                <th class="list-item">Coeficiente Potência x0</th>
-                <th class="list-item">Coeficiente Potência x1</th>
-                <th class="list-item">Coeficiente Potência x2</th>
-                <th class="list-item">Coeficiente Potência x3</th>
-                <th class="list-item">Coeficiente Potência x4</th>
-                <th class="list-item">Coeficiente Potência x5</th>
+                <th class="list-item">Coeficiente Head</th>
+                <th class="list-item">Coeficiente Potência</th>
             </tr>
             <tr ng-class="{'selecionado negrito': tempBomba.selecionado}" ng-repeat="tempBomba in bombas">
                 <td><input type="checkbox" ng-model="tempBomba.selecionado" /></td>
                 <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.nome}}</td>
                 <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.fabricante}}</td>
                 <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.vazaoDesejada}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.rangeVazaoMin}}</td>
                 <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.rangeVazaoMinima}}</td>
                 <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.vazaoNominal}}</td>
                 <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.vazaoMaxima}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX0}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX1}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX2}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX3}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX4}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaHeadX5}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX0}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX1}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX2}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX3}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX4}}</td>
-                <td ng-class="{'list-item' : !tempBomba.selecionado}">{{tempBomba.curvaPotenciaX5}}</td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}"><button type="button" ng-click="passarBomba(tempBomba)" class="btn btn-light"
+                        data-toggle="modal" data-target="#myModalHead">
+                        abrir
+                    </button>
+                </td>
+                <td ng-class="{'list-item' : !tempBomba.selecionado}"><button type="button" class="btn btn-light"
+                        data-toggle="modal" data-target="#myModalPot">
+                        abrir
+                    </button></td>
             </tr>
         </table>
         <hr>
+    </div>
+    <!-- The Modal -->
+    <div class="modal fade" id="myModalHead">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <table ng-show="bombas.length > 0" class="table table-striped mt-3">
+                        <tr>
+                            <th>Coeficiente Head x0</th>
+                            <th>Coeficiente Head x1</th>
+                            <th>Coeficiente Head x2</th>
+                            <th>Coeficiente Head x3</th>
+                            <th>Coeficiente Head x4</th>
+                            <th>Coeficiente Head x5</th>
+                        </tr>
+                        <tr>
+                            <td>{{coef.curvaHeadX0}}</td>
+                            <td>{{coef.curvaHeadX1}}</td>
+                            <td>{{coef.curvaHeadX2}}</td>
+                            <td>{{coef.curvaHeadX3}}</td>
+                            <td>{{coef.curvaHeadX4}}</td>
+                            <td>{{coef.curvaHeadX5}}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- The Modal -->
+    <div class="modal fade" id="myModalPot">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <table ng-show="bombas.length > 0" class="table table-striped mt-3">
+                        <tr>
+                            <th>Coeficiente Potência x0</th>
+                            <th>Coeficiente Potência x1</th>
+                            <th>Coeficiente Potência x2</th>
+                            <th>Coeficiente Potência x3</th>
+                            <th>Coeficiente Potência x4</th>
+                            <th>Coeficiente Potência x5</th>
+                        </tr>
+                        <tr>                            
+                            <td>{{coef.curvaPotenciaX0}}</td>
+                            <td>{{coef.curvaPotenciaX1}}</td>
+                            <td>{{coef.curvaPotenciaX2}}</td>
+                            <td>{{coef.curvaPotenciaX3}}</td>
+                            <td>{{coef.curvaPotenciaX4}}</td>
+                            <td>{{coef.curvaPotenciaX5}}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
     </div>
     <div id='cadastro' class='jumbotron'>
         <h3 class="list-item">Cadastro das Bombas</h3>
         <form class="inputs-div" name="bombaForm">
             <!-- <div class="form-inline"> -->
-                <input class="form-control mb-3" type="text" ng-model="bomba.nome" name="nome" placeholder="Nome"
-                    ng-required="true" />
-                <input class="form-control mb-3" type="text" ng-model="bomba.fabricante" name="fabricante"
-                    placeholder="Fabricante" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.vazaoDesejada" name="vazaoDesejada"
-                    placeholder="Vazão Desejada" ng-required="true" />
+            <input class="form-control mb-3" type="text" ng-model="bomba.nome" name="nome" placeholder="Nome"
+                ng-required="true" />
+            <input class="form-control mb-3" type="text" ng-model="bomba.fabricante" name="fabricante"
+                placeholder="Fabricante" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.vazaoDesejada" name="vazaoDesejada"
+                placeholder="Vazão Desejada" ng-required="true" />
             <!-- </div> -->
             <!-- <div class="form-inline"> -->
-                <input class="form-control mb-3" type="number" ng-model="bomba.rangeVazaoMin" name="rangeVazaoMin"
-                    placeholder="Range Vazão Min" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.rangeVazaoMinima" name="rangeVazaoMinima"
-                    placeholder="Range Vazão Mínima" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.vazaoNominal" name="vazaoNominal"
-                    placeholder="Vazão nominal" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.vazaoMaxima" name="vazaoMaxima"
-                    placeholder="Vazão Máxima" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.rangeVazaoMin" name="rangeVazaoMin"
+                placeholder="Range Vazão Min" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.rangeVazaoMinima" name="rangeVazaoMinima"
+                placeholder="Range Vazão Mínima" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.vazaoNominal" name="vazaoNominal"
+                placeholder="Vazão nominal" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.vazaoMaxima" name="vazaoMaxima"
+                placeholder="Vazão Máxima" ng-required="true" />
             <!-- </div> -->
             <!-- <div class="form-inline"></div> -->
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX0" name="curvaHeadX0"
-                    placeholder="Coeficiente de Head x0" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX1" name="curvaHeadX1"
-                    placeholder="Coeficiente de Head x1" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX2" name="curvaHeadX2"
-                    placeholder="Coeficiente de Head x2" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX3" name="curvaHeadX3"
-                    placeholder="Coeficiente de Head x3" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX4" name="curvaHeadX4"
-                    placeholder="Coeficiente de Head x4" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX5" name="curvaHeadX5"
-                    placeholder="Coeficiente de Head x5" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX0" name="curvaHeadX0"
+                placeholder="Coeficiente de Head x0" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX1" name="curvaHeadX1"
+                placeholder="Coeficiente de Head x1" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX2" name="curvaHeadX2"
+                placeholder="Coeficiente de Head x2" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX3" name="curvaHeadX3"
+                placeholder="Coeficiente de Head x3" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX4" name="curvaHeadX4"
+                placeholder="Coeficiente de Head x4" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaHeadX5" name="curvaHeadX5"
+                placeholder="Coeficiente de Head x5" ng-required="true" />
             <!-- </div> -->
             <!-- <div class="form-inline"> -->
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX0" name="curvaPotenciaX0"
-                    placeholder="Coeficiente de Potência x0" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX1" name="curvaPotenciaX1"
-                    placeholder="Coeficiente de Potência x1" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX2" name="curvaPotenciaX2"
-                    placeholder="Coeficiente de Potência x2" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX3" name="curvaPotenciaX3"
-                    placeholder="Coeficiente de Potência x3" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX4" name="curvaPotenciaX4"
-                    placeholder="Coeficiente de Potência x4" ng-required="true" />
-                <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX5" name="curvaPotenciaX5"
-                    placeholder="Coeficiente de Potência x5" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX0" name="curvaPotenciaX0"
+                placeholder="Coeficiente de Potência x0" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX1" name="curvaPotenciaX1"
+                placeholder="Coeficiente de Potência x1" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX2" name="curvaPotenciaX2"
+                placeholder="Coeficiente de Potência x2" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX3" name="curvaPotenciaX3"
+                placeholder="Coeficiente de Potência x3" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX4" name="curvaPotenciaX4"
+                placeholder="Coeficiente de Potência x4" ng-required="true" />
+            <input class="form-control mb-3" type="number" ng-model="bomba.curvaPotenciaX5" name="curvaPotenciaX5"
+                placeholder="Coeficiente de Potência x5" ng-required="true" />
             <!-- </div> -->
         </form>
 
@@ -221,8 +303,8 @@
             </div>
         </div>
         <div class='buttons-div'>
-            <button class="btn btn-primary btn-block" ng-click="adicionarBomba(bomba)" ng-if="!isBombaSelecionado(bombas)"
-                ng-disabled="bombaForm.$invalid">Adicionar Bomba</button>
+            <button class="btn btn-primary btn-block" ng-click="adicionarBomba(bomba)"
+                ng-if="!isBombaSelecionado(bombas)" ng-disabled="bombaForm.$invalid">Adicionar Bomba</button>
             <button class="btn btn-warning btn-block" ng-click="atualizarBombas(bombas, bomba)"
                 ng-if="isBombaSelecionado(bombas)" ng-disabled="bombaForm.$invalid">Atualizar Bomba</button>
             <button class="btn btn-danger btn-block" ng-click="apagarBombas(bombas)"
